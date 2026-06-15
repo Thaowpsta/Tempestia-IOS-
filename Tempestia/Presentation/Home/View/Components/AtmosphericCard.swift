@@ -7,8 +7,10 @@
 
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct AtmosphericCard: View {
-    let theme: TempestiaTheme
+    @Environment(\.tempestia) var theme
+
     let title: String
     let value: String
     let subtext: String
@@ -23,7 +25,7 @@ struct AtmosphericCard: View {
             Text(title)
                 .foregroundColor(theme.text3)
                 .font(.system(size: 11, weight: .semibold))
-//                .letterSpacing(1.0)
+                .letterSpacing(1.0)
             
             Text(value)
                 .foregroundColor(theme.text1)
@@ -35,10 +37,14 @@ struct AtmosphericCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .tempestiaGlass(theme: theme, radius: 24)
+        .tempestiaGlass(radius: 24)
     }
 }
 
 #Preview {
-    AtmosphericCard(theme: TempestiaTheme(isMorning: true), title: "Title", value: "value", subtext: "SubText", icon: "tempestia_dark")
+    if #available(iOS 16.0, *) {
+        AtmosphericCard(title: "Title", value: "value", subtext: "SubText", icon: "tempestia_dark")
+    } else {
+        // Fallback on earlier versions
+    }
 }

@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct LocationPill: View {
-    let theme: TempestiaTheme
+    @Environment(\.tempestia) var theme
+
     let locationName: String
     
     var body: some View {
@@ -23,10 +24,10 @@ struct LocationPill: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
-        .tempestiaGlass(theme: theme, radius: 50)
+        .tempestiaGlass(radius: 50)
     }
 }
 
 #Preview {
-    LocationPill(theme: TempestiaTheme(isMorning: true), locationName: "Cairo")
+    LocationPill(locationName: "Cairo")
 }

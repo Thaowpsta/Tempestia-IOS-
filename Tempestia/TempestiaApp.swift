@@ -7,11 +7,14 @@
 
 import SwiftUI
 
+@available(iOS 16.0, *)
 @main
 struct TempestiaApp: App {
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            HomeView().environment(\.tempestia, TempestiaTheme(isMorning: colorScheme == .light))
         }
     }
 }

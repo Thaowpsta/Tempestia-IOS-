@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CurrentWeatherHeader: View {
-    let theme: TempestiaTheme
+    @Environment(\.tempestia) var theme
     
     var body: some View {
         VStack() {
@@ -40,5 +40,5 @@ struct CurrentWeatherHeader: View {
 }
 
 #Preview {
-    CurrentWeatherHeader(theme: TempestiaTheme(isMorning: true))
+    CurrentWeatherHeader()
 }

@@ -7,9 +7,9 @@
 
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct HomeView: View {
-    var isMorning: Bool = false
-    private var theme: TempestiaTheme { TempestiaTheme(isMorning: isMorning) }
+    @Environment(\.tempestia) var theme
 
     var body: some View {
         NavigationView {
@@ -18,23 +18,21 @@ struct HomeView: View {
 
                 ScrollView {
                     VStack {
-                        LocationPill(theme: theme, locationName: "Cairo")
+                        LocationPill(locationName: "Cairo")
                         
-                        CurrentWeatherHeader(theme: theme)
+                        CurrentWeatherHeader()
 
                         SectionHeader(
-                            theme: theme,
                             title: "3-DAY FORECAST",
                             icon: "calendar"
                         )
-                        DailyForecastSection(theme: theme)
+                        DailyForecastSection()
 
                         SectionHeader(
-                            theme: theme,
                             title: "ATMOSPHERIC DETAILS",
                             icon: "aqi.medium"
                         )
-                        AtmosphericGrid(theme: theme)
+                        AtmosphericGrid()
                             .padding(.bottom, 64)
 
                     }.padding()
@@ -45,5 +43,9 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    if #available(iOS 16.0, *) {
+        HomeView()
+    } else {
+        // Fallback on earlier versions
+    }
 }

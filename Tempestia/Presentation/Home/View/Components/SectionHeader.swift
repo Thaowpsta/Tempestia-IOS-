@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct SectionHeader: View {
-    let theme: TempestiaTheme
+    @Environment(\.tempestia) var theme
+
     let title: String
     let icon: String
     
@@ -27,5 +28,5 @@ struct SectionHeader: View {
 }
 
 #Preview {
-    SectionHeader(theme: TempestiaTheme(isMorning: true), title: "Header", icon: "tempestia_dark")
+    SectionHeader(title: "Header", icon: "tempestia_dark")
 }

@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct DailyForecastRow: View {
-    let theme: TempestiaTheme
+    @Environment(\.tempestia) var theme
+
     let day: String
     let icon: String
     let minTemp: String
     let maxTemp: String
     
     var body: some View {
-        NavigationLink(destination: Text("Hourly Forecast View")) {
+        NavigationLink(destination: HourlyForecastView()) {
             HStack {
                 Text(day)
                     .foregroundColor(theme.text2)
@@ -39,5 +40,5 @@ struct DailyForecastRow: View {
 }
 
 #Preview {
-    DailyForecastRow(theme: TempestiaTheme(isMorning: true), day: "Sunday", icon: "tempestia_dark", minTemp: "18", maxTemp: "30")
+    DailyForecastRow( day: "Sunday", icon: "tempestia_dark", minTemp: "18", maxTemp: "30")
 }

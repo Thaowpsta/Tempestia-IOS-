@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct GlassmorphicStyle: ViewModifier {
-    let theme: TempestiaTheme
+    @Environment(\.tempestia) var theme
     let cornerRadius: CGFloat
     
     func body(content: Content) -> some View {
@@ -24,7 +24,7 @@ struct GlassmorphicStyle: ViewModifier {
 }
 
 extension View {
-    func tempestiaGlass(theme: TempestiaTheme, radius: CGFloat = 32) -> some View {
-        self.modifier(GlassmorphicStyle(theme: theme, cornerRadius: radius))
+    func tempestiaGlass(radius: CGFloat = 32) -> some View {
+        self.modifier(GlassmorphicStyle(cornerRadius: radius))
     }
 }

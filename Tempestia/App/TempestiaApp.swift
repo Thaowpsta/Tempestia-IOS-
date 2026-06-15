@@ -14,7 +14,7 @@ struct TempestiaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView().environment(\.tempestia, TempestiaTheme(isMorning: colorScheme == .light))
+            MainTabView().environment(\.tempestia, TempestiaTheme(isMorning: colorScheme == .dark))
         }
     }
 }

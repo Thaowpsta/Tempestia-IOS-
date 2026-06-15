@@ -7,9 +7,18 @@
 
 import SwiftUI
 
+//
+//  HomeView.swift
+//  Tempestia
+//
+
+import SwiftUI
+
 @available(iOS 16.0, *)
 struct HomeView: View {
     @Environment(\.tempestia) var theme
+    
+    @StateObject private var viewModel = DependencyInjector.resolve(HomeViewModel.self)
 
     var body: some View {
         NavigationView {
@@ -18,7 +27,7 @@ struct HomeView: View {
                                     .ignoresSafeArea()
                 ScrollView {
                     VStack {
-                        LocationPill(locationName: "Cairo")
+                        LocationPill(locationName: viewModel.weatherInfo?.locationName ?? "Locating...")
                         
                         CurrentWeatherHeader()
 
@@ -37,6 +46,9 @@ struct HomeView: View {
 
                     }.padding()
                 }
+            }
+            .onAppear {
+                viewModel.fetchWeatherForCurrentLocation()
             }
         }
     }

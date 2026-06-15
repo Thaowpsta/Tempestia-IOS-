@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct DailyForecastSection: View {
     @Environment(\.tempestia) var theme
     
@@ -32,5 +33,9 @@ extension View {
 }
 
 #Preview {
-    DailyForecastSection()
+    if #available(iOS 16.0, *) {
+        DailyForecastSection()
+    } else {
+        // Fallback on earlier versions
+    }
 }

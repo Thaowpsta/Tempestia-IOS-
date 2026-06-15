@@ -37,11 +37,17 @@ struct HourlyRow: View {
         .padding(.vertical, 16)
         .padding(.horizontal, 24)
         .tempestiaGlass(radius: 20)
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 }
 
 #Preview {
     NavigationView {
-        HourlyForecastView()
+        if #available(iOS 16.0, *) {
+            HourlyForecastView()
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }

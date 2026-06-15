@@ -14,8 +14,8 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                theme.bgDeep.edgesIgnoringSafeArea(.all)
-
+                AnimatedParticleBackground()
+                                    .ignoresSafeArea()
                 ScrollView {
                     VStack {
                         LocationPill(locationName: "Cairo")

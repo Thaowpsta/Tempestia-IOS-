@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(iOS 16.0, *)
 struct DailyForecastRow: View {
     @Environment(\.tempestia) var theme
 
@@ -40,5 +41,9 @@ struct DailyForecastRow: View {
 }
 
 #Preview {
-    DailyForecastRow( day: "Sunday", icon: "tempestia_dark", minTemp: "18", maxTemp: "30")
+    if #available(iOS 16.0, *) {
+        DailyForecastRow( day: "Sunday", icon: "tempestia_dark", minTemp: "18", maxTemp: "30")
+    } else {
+        // Fallback on earlier versions
+    }
 }

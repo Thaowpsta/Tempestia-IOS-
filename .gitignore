@@ -23,4 +23,4 @@ DerivedData/
 !default.perspectivev3
 
 # Environment Secrets & Configs
-Secrets.xcconfig
+Config.xcconfig

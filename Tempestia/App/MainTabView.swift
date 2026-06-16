@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-@available(iOS 16.0, *)
+@available(iOS 17.0, *)
 struct MainTabView: View {
     @Environment(\.tempestia) var theme
-    @State private var selectedTab: AppTab = .home
+    @EnvironmentObject var router: AppRouter
     
     var body: some View {
         ZStack {
@@ -18,7 +18,7 @@ struct MainTabView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                switch selectedTab {
+                switch router.activeTab {
                 case .home:
                     HomeView()
                 case .favorites:
@@ -33,7 +33,7 @@ struct MainTabView: View {
             
             VStack {
                 Spacer()
-                CustomTabBar(selectedTab: $selectedTab)
+                CustomTabBar(selectedTab: $router.activeTab)
                     .padding(.horizontal, 24)
                     .padding(.bottom, 16)
             }

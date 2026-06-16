@@ -8,4 +8,5 @@
 
 protocol WeatherRepositoryProtocol {
     func fetchWeather(query: String, days: Int) async throws -> WeatherInfo
+    func searchLocations(query: String) async throws -> [LocationSearchResult]
 }

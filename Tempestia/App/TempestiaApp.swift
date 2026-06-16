@@ -6,15 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
-@available(iOS 16.0, *)
+@available(iOS 17.0, *)
 @main
 struct TempestiaApp: App {
     @Environment(\.colorScheme) var colorScheme
     
+    @StateObject private var router = AppRouter()
+    
     var body: some Scene {
         WindowGroup {
             MainTabView().environment(\.tempestia, TempestiaTheme(isMorning: colorScheme == .dark))
+                .modelContainer(for: FavoriteLocation.self)
+                .environmentObject(router)
         }
     }
 }

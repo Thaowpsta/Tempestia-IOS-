@@ -27,6 +27,11 @@ class DependencyInjector {
             
             return HomeViewModel(repository: repository, locationTracker: locationTracker)
         }
+        
+        container.register(LocationSearchViewModel.self) { resolver in
+            let repository = resolver.resolve(WeatherRepositoryProtocol.self)!
+            return LocationSearchViewModel(repository: repository)
+        }
     }
     
     static func resolve<T>(_ type: T.Type) -> T {

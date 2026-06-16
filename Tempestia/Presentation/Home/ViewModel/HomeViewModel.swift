@@ -44,4 +44,20 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
+    
+    func fetchWeatherForCoordinates(latitude: Double, longitude: Double) {
+        isLoading = true
+        errorMessage = nil
+        
+        Task {
+            do {
+                let query = "\(latitude),\(longitude)"
+                self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
+                self.isLoading = false
+            } catch {
+                self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
+                self.isLoading = false
+            }
+        }
+    }
 }

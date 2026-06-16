@@ -6,55 +6,58 @@
 //
 
 import SwiftUI
+import SwiftData
 
-@available(iOS 16.0, *)
+@available(iOS 17.0, *)
 struct HomeView: View {
     @Environment(\.tempestia) var theme
-    @StateObject private var viewModel = DependencyInjector.resolve(HomeViewModel.self)
+    @EnvironmentObject var router: AppRouter
+    
+    @Query(sort: \FavoriteLocation.addedAt, order: .forward) private var favorites: [FavoriteLocation]
+
+    private var pageIds: [String] {
+        ["current"] + favorites.map { $0.id.uuidString }
+    }
 
     var body: some View {
         NavigationView {
-            ZStack {
-                AnimatedParticleBackground()
-                                    .ignoresSafeArea()
-                ScrollView(showsIndicators: false) {
-                    VStack {
-                        LocationPill(locationName: viewModel.weatherInfo?.locationName ?? "Locating...")
-                        
-                        if viewModel.isLoading && viewModel.weatherInfo == nil {
-                            ProgressView("Analyzing Atmosphere...")
-                                .foregroundColor(theme.text2)
-                                .padding(.top, 100)
-                        } else if let errorMessage = viewModel.errorMessage {
-                            Text(errorMessage)
-                                .foregroundColor(.red)
-                                .multilineTextAlignment(.center)
-                                .padding(.top, 100)
-                        }
-                        else if let weather = viewModel.weatherInfo {
-                            
-                            CurrentWeatherHeader(weather: weather)
 
-                            SectionHeader(title: "3-DAY FORECAST", icon: "calendar")
-                            DailyForecastSection(forecasts: weather.dailyForecast, hourlyData: weather.hourlyForecast)
+            ZStack(alignment: .top) {
 
-                            SectionHeader(title: "ATMOSPHERIC DETAILS", icon: "aqi.medium")
-                            AtmosphericGrid(weather: weather)
-                                .padding(.bottom, 64)
-                        }
-
-                    }.padding()
+                AnimatedParticleBackground().ignoresSafeArea()
+                
+                TabView(selection: $router.activeHomePageId) {
+                    
+                    WeatherPageView(favorite: nil)
+                        .tag("current")
+                    
+                    ForEach(favorites) { favorite in
+                        WeatherPageView(favorite: favorite)
+                            .tag(favorite.id.uuidString)
+                    }
                 }
-            }
-            .onAppear {
-                viewModel.fetchWeatherForCurrentLocation()
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .padding(.bottom, 60)
+                
+                HStack(spacing: 8) {
+                    ForEach(pageIds, id: \.self) { id in
+                        Circle()
+                            .fill(router.activeHomePageId == id ? theme.purpleBright : theme.text3.opacity(0.4))
+                            .frame(
+                                width: router.activeHomePageId == id ? 10 : 6,
+                                height: router.activeHomePageId == id ? 10 : 6
+                            )
+                            .animation(.spring(), value: router.activeHomePageId)
+                    }
+                }
+                .padding(.top, 10) 
             }
         }
     }
 }
 
 #Preview {
-    if #available(iOS 16.0, *) {
+    if #available(iOS 17.0, *) {
         HomeView()
     } else {
         // Fallback on earlier versions

@@ -29,16 +29,35 @@ class LocationTracker: NSObject, LocationTrackerProtocol, CLLocationManagerDeleg
         }
         
         return try await withCheckedThrowingContinuation { continuation in
+            if self.locationContinuation != nil {
+                self.locationContinuation?.resume(throwing: LocationError.unableToDetermineLocation)
+                self.locationContinuation = nil
+            }
+            
             self.locationContinuation = continuation
             
             if status == .notDetermined {
                 locationManager.requestWhenInUseAuthorization()
+            } else {
+                locationManager.requestLocation()
             }
-            
-            locationManager.requestLocation()
         }
     }
         
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
+        
+        if locationContinuation != nil {
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
+
+                manager.requestLocation()
+            } else if status == .denied || status == .restricted {
+                locationContinuation?.resume(throwing: LocationError.unauthorized)
+                locationContinuation = nil
+            }
+        }
+    }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first, let continuation = locationContinuation else { return }
         

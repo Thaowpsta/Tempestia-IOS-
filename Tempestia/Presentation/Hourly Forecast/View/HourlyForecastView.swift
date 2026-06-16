@@ -10,6 +10,8 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 struct HourlyForecastView: View {
+    let hourlyData: [HourlyForecast]
+    
     var body: some View {
         ZStack {
 
@@ -17,11 +19,9 @@ struct HourlyForecastView: View {
                 .ignoresSafeArea()
             
             List {
-                HourlyRow(time: "Now", temp: "15°", icon: "sun.max.fill")
-                HourlyRow(time: "3PM", temp: "15°", icon: "cloud.sun.fill")
-                HourlyRow(time: "4PM", temp: "14°", icon: "cloud.fill")
-                HourlyRow(time: "5PM", temp: "13°", icon: "cloud.rain.fill")
-                HourlyRow(time: "6PM", temp: "12°", icon: "moon.fill")
+                ForEach(hourlyData, id: \.timeEpoch) { hour in
+                    HourlyRow(time: hour.time, temp: "\(Int(hour.temp))°", icon: hour.conditionIcon)
+                }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
@@ -34,7 +34,7 @@ struct HourlyForecastView: View {
 
 #Preview {
     if #available(iOS 16.0, *) {
-        HourlyForecastView()
+//        HourlyForecastView()
     } else {
         // Fallback on earlier versions
     }

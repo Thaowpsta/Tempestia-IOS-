@@ -7,17 +7,9 @@
 
 import SwiftUI
 
-//
-//  HomeView.swift
-//  Tempestia
-//
-
-import SwiftUI
-
 @available(iOS 16.0, *)
 struct HomeView: View {
     @Environment(\.tempestia) var theme
-    
     @StateObject private var viewModel = DependencyInjector.resolve(HomeViewModel.self)
 
     var body: some View {
@@ -25,24 +17,31 @@ struct HomeView: View {
             ZStack {
                 AnimatedParticleBackground()
                                     .ignoresSafeArea()
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack {
                         LocationPill(locationName: viewModel.weatherInfo?.locationName ?? "Locating...")
                         
-                        CurrentWeatherHeader()
+                        if viewModel.isLoading && viewModel.weatherInfo == nil {
+                            ProgressView("Analyzing Atmosphere...")
+                                .foregroundColor(theme.text2)
+                                .padding(.top, 100)
+                        } else if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .foregroundColor(.red)
+                                .multilineTextAlignment(.center)
+                                .padding(.top, 100)
+                        }
+                        else if let weather = viewModel.weatherInfo {
+                            
+                            CurrentWeatherHeader(weather: weather)
 
-                        SectionHeader(
-                            title: "3-DAY FORECAST",
-                            icon: "calendar"
-                        )
-                        DailyForecastSection()
+                            SectionHeader(title: "3-DAY FORECAST", icon: "calendar")
+                            DailyForecastSection(forecasts: weather.dailyForecast, hourlyData: weather.hourlyForecast)
 
-                        SectionHeader(
-                            title: "ATMOSPHERIC DETAILS",
-                            icon: "aqi.medium"
-                        )
-                        AtmosphericGrid()
-                            .padding(.bottom, 64)
+                            SectionHeader(title: "ATMOSPHERIC DETAILS", icon: "aqi.medium")
+                            AtmosphericGrid(weather: weather)
+                                .padding(.bottom, 64)
+                        }
 
                     }.padding()
                 }

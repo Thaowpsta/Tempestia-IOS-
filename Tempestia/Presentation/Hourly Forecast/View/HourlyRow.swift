@@ -20,15 +20,9 @@ struct HourlyRow: View {
                 .foregroundColor(theme.text2)
                 .font(.system(size: 18, weight: .medium))
                 .frame(width: 80, alignment: .leading)
-            
             Spacer()
-            
-            Image(systemName: icon)
-                .symbolRenderingMode(.multicolor)
-                .font(.system(size: 24))
-            
+            Text(icon).font(.system(size: 24))
             Spacer()
-            
             Text(temp)
                 .foregroundColor(theme.text1)
                 .font(.system(size: 20, weight: .bold))
@@ -45,7 +39,7 @@ struct HourlyRow: View {
 #Preview {
     NavigationView {
         if #available(iOS 16.0, *) {
-            HourlyForecastView()
+//            HourlyForecastView()
         } else {
             // Fallback on earlier versions
         }

@@ -10,17 +10,27 @@ import SwiftUI
 @available(iOS 16.0, *)
 struct DailyForecastSection: View {
     @Environment(\.tempestia) var theme
-    
+    let forecasts: [DailyForecast]
+    let hourlyData: [HourlyForecast] 
+
     var body: some View {
         VStack(spacing: 0) {
-            DailyForecastRow(day: "Today", icon: "⛅", minTemp: "7.8°", maxTemp: "15.5°")
-            Divider().background(theme.glassBorder.opacity(0.3)).padding(.vertical, 8)
-            DailyForecastRow(day: "Wed", icon: "🌧", minTemp: "6.4°", maxTemp: "16.1°")
-            Divider().background(theme.glassBorder.opacity(0.3)).padding(.vertical, 8)
-            DailyForecastRow(day: "Thu", icon: "☀", minTemp: "8.7°", maxTemp: "17.8°")
+            ForEach(Array(forecasts.enumerated()), id: \.element.dateEpoch) { index, day in
+                DailyForecastRow(
+                    day: index == 0 ? "Today" : day.date,
+                    icon: day.conditionIcon,
+                    minTemp: "\(Int(day.minTemp))°",
+                    maxTemp: "\(Int(day.maxTemp))°",
+                    hourlyData: hourlyData
+                )
+
+                if index < forecasts.count - 1 {
+                    Divider().background(theme.glassBorder.opacity(0.3)).padding(.vertical, 8)
+                }
+            }
         }
         .padding(24)
-        .tempestiaGlass()
+        .tempestiaGlass(radius: 32)
     }
 }
 
@@ -34,7 +44,7 @@ extension View {
 
 #Preview {
     if #available(iOS 16.0, *) {
-        DailyForecastSection()
+//        DailyForecastSection()
     } else {
         // Fallback on earlier versions
     }

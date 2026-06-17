@@ -23,8 +23,6 @@ struct MainTabView: View {
                     HomeView()
                 case .favorites:
                     FavoritesView()
-                case .alerts:
-                    AlertsView()
                 case .settings:
                     SettingsView()
                 }

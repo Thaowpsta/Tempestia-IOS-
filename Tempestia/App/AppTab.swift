@@ -12,14 +12,12 @@ import SwiftUI
 enum AppTab: String, CaseIterable {
     case home = "house.fill"
     case favorites = "heart.fill"
-    case alerts = "bell.fill"
     case settings = "gearshape.fill"
     
     var title: String {
         switch self {
         case .home: return "Home"
         case .favorites: return "Favorites"
-        case .alerts: return "Alerts"
         case .settings: return "Settings"
         }
     }

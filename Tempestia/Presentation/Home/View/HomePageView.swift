@@ -1,5 +1,5 @@
 //
-//  WeatherPageView.swift
+//  HomePageView.swift
 //  Tempestia
 //
 //  Created by Thaowpsta Saiid on 16/06/2026.
@@ -9,7 +9,7 @@
 import SwiftUI
 
 @available(iOS 17.0, *)
-struct WeatherPageView: View {
+struct HomePageView: View {
     @Environment(\.tempestia) var theme
     
     @StateObject private var viewModel = DependencyInjector.resolve(HomeViewModel.self)
@@ -44,12 +44,23 @@ struct WeatherPageView: View {
             }
             .padding()
         }
+        .refreshable {
+            await fetchWeatherData()
+        }
         .onAppear {
-            if let fav = favorite {
-                viewModel.fetchWeatherForCoordinates(latitude: fav.latitude, longitude: fav.longitude)
-            } else {
-                viewModel.fetchWeatherForCurrentLocation()
+            if viewModel.weatherInfo == nil {
+                Task {
+                    await fetchWeatherData()
+                }
             }
+        }
+    }
+    
+    private func fetchWeatherData() async {
+        if let fav = favorite {
+            await viewModel.fetchWeatherForCoordinates(latitude: fav.latitude, longitude: fav.longitude)
+        } else {
+            await viewModel.fetchWeatherForCurrentLocation()
         }
     }
 }

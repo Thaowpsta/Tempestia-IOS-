@@ -22,42 +22,51 @@ class HomeViewModel: ObservableObject {
         self.locationTracker = locationTracker
     }
     
-    func fetchWeatherForCurrentLocation() {
+    func fetchWeatherForCurrentLocation() async {
         isLoading = true
         errorMessage = nil
         
-        Task {
-            do {
-                let coords = try await locationTracker.getCurrentLocation()
-                
-                let query = "\(coords.latitude),\(coords.longitude)"
-                
-                self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
-                self.isLoading = false
-                
-            } catch let error as LocationError {
-                self.errorMessage = error.localizedDescription
-                self.isLoading = false
-            } catch {
-                self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
-                self.isLoading = false
-            }
+        do {
+            let coords = try await locationTracker.getCurrentLocation()
+            let query = "\(coords.latitude),\(coords.longitude)"
+            
+            self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
+            self.isLoading = false
+            
+        } catch is CancellationError {
+            print("Task cancelled by system.")
+            self.isLoading = false
+        } catch let error as URLError where error.code == .cancelled {
+            print("Network request cancelled by system.")
+            self.isLoading = false
+        } catch let error as LocationError {
+            self.errorMessage = error.localizedDescription
+            self.isLoading = false
+        } catch {
+            self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
+            self.isLoading = false
         }
     }
     
-    func fetchWeatherForCoordinates(latitude: Double, longitude: Double) {
+    func fetchWeatherForCoordinates(latitude: Double, longitude: Double) async {
         isLoading = true
         errorMessage = nil
         
-        Task {
-            do {
-                let query = "\(latitude),\(longitude)"
-                self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
-                self.isLoading = false
-            } catch {
-                self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
-                self.isLoading = false
-            }
+        do {
+            let query = "\(latitude),\(longitude)"
+            self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
+            self.isLoading = false
+            print("Task Updated Successfully.")
+            
+        } catch is CancellationError {
+            print("Task cancelled by system.")
+            self.isLoading = false
+        } catch let error as URLError where error.code == .cancelled {
+            print("Network request cancelled by system.")
+            self.isLoading = false 
+        } catch {
+            self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
+            self.isLoading = false
         }
     }
 }

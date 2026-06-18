@@ -28,11 +28,11 @@ struct HomeView: View {
                 
                 TabView(selection: $router.activeHomePageId) {
                     
-                    WeatherPageView(favorite: nil)
+                    HomePageView(favorite: nil)
                         .tag("current")
                     
                     ForEach(favorites) { favorite in
-                        WeatherPageView(favorite: favorite)
+                        HomePageView(favorite: favorite)
                             .tag(favorite.id.uuidString)
                     }
                 }

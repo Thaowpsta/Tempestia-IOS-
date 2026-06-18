@@ -19,6 +19,14 @@ struct SettingsView: View {
     @AppStorage("isNotificationEnabled") private var isNotificationEnabled = false
     @AppStorage("notificationTime") private var notificationTime: Double = Date().timeIntervalSince1970
     
+    @AppStorage("locationMode") private var locationMode: LocationMode = .gps
+    @AppStorage("temperatureUnit") private var temperatureUnit: TempUnit = .celsius
+    @AppStorage("timeFormat") private var timeFormat: TimeFormat = .h12
+    @AppStorage("appTheme") private var appTheme: AppThemeMode = .auto
+    @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
+    
+    @State private var showingMapPicker = false
+    
     private let notificationId = UUID(uuidString: "11111111-2222-3333-4444-555555555555")!
     
     var selectedTime: Binding<Date> {
@@ -34,43 +42,65 @@ struct SettingsView: View {
                 AnimatedParticleBackground()
                     .ignoresSafeArea()
                 
-                VStack {
-                    VStack(spacing: 16) {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 24) {
                         
-                        Toggle(isOn: $isNotificationEnabled) {
-                            HStack(spacing: 12) {
-                                Image(systemName: "bell.badge.fill")
-                                    .foregroundColor(theme.purpleBright)
-                                    .font(.system(size: 20))
-                                Text("Daily Weather Summary")
-                                    .font(.headline)
+                        settingsSection {
+                            Toggle(isOn: $isNotificationEnabled) {
+                                settingsRowLabel(icon: "bell.badge.fill", title: "Daily Weather Summary")
+                            }
+                            .tint(theme.purpleBright)
+                            .onChange(of: isNotificationEnabled) { _, _ in
+                                handleNotificationToggle()
+                            }
+                            
+                            if isNotificationEnabled {
+                                Divider().background(theme.glassBorder.opacity(0.3))
+                                
+                                DatePicker("Delivery Time", selection: selectedTime, displayedComponents: .hourAndMinute)
+                                    .font(.subheadline.bold())
                                     .foregroundColor(theme.text1)
+                                    .environment(\.colorScheme, theme.isMorning ? .light : .dark)
+                                    .onChange(of: notificationTime) { _, _ in
+                                        handleNotificationToggle()
+                                    }
                             }
                         }
-                        .tint(theme.purpleBright)
-                        .onChange(of: isNotificationEnabled) { _, _ in
-                            handleNotificationToggle()
+                        
+                        settingsSection {
+                            settingsPickerRow(icon: "location.fill", title: "Location Mode", selection: $locationMode)
+                            
+                            if locationMode == .manual {
+                                Divider().background(theme.glassBorder.opacity(0.3))
+                                Button(action: { showingMapPicker = true }) {
+                                    HStack {
+                                        Text("Pick location on Map...")
+                                            .font(.subheadline.bold())
+                                            .foregroundColor(theme.purpleBright)
+                                        Spacer()
+                                        Image(systemName: "map.fill")
+                                            .foregroundColor(theme.purpleBright)
+                                    }
+                                    .padding(.vertical, 4)
+                                }
+                            }
                         }
                         
-                        if isNotificationEnabled {
+                        settingsSection {
+                            settingsPickerRow(icon: "thermometer", title: "Temperature Unit", selection: $temperatureUnit)
                             Divider().background(theme.glassBorder.opacity(0.3))
-                            
-                            DatePicker("Delivery Time", selection: selectedTime, displayedComponents: .hourAndMinute)
-                                .font(.subheadline.bold())
-                                .foregroundColor(theme.text1)
-                                .environment(\.colorScheme, theme.isMorning ? .light : .dark)
-                                .onChange(of: notificationTime) { _, _ in
-                                    handleNotificationToggle()
-                                }
+                            settingsPickerRow(icon: "clock.fill", title: "Time Format", selection: $timeFormat)
                         }
+                        
+                        settingsSection {
+                            settingsPickerRow(icon: "paintpalette.fill", title: "App Theme", selection: $appTheme)
+                            Divider().background(theme.glassBorder.opacity(0.3))
+                            settingsPickerRow(icon: "globe", title: "Language", selection: $appLanguage)
+                        }
+                        
+                        Spacer().frame(height: 100)
                     }
-                    .padding(20)
-                    .background(theme.glassBorder.opacity(0.1))
-                    .cornerRadius(24)
-                    .padding(.horizontal, 24)
                     .padding(.top, 24)
-                    
-                    Spacer()
                 }
             }
             .navigationTitle("Settings")
@@ -82,6 +112,51 @@ struct SettingsView: View {
                 UINavigationBar.appearance().standardAppearance = appearance
                 UINavigationBar.appearance().scrollEdgeAppearance = appearance
             }
+            .sheet(isPresented: $showingMapPicker) {
+                ZStack {
+                    theme.bgDeep.ignoresSafeArea()
+                    Text("Map Picker Coming Soon!")
+                        .foregroundColor(theme.text1)
+                }
+                .presentationDetents([.large])
+            }
+        }
+    }
+        
+    private func settingsSection<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        VStack(spacing: 16) {
+            content()
+        }
+        .padding(20)
+        .background(theme.glassBorder.opacity(0.1))
+        .cornerRadius(24)
+        .padding(.horizontal, 24)
+    }
+    
+    private func settingsRowLabel(icon: String, title: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .foregroundColor(theme.purpleBright)
+                .font(.system(size: 20))
+                .frame(width: 24)
+            
+            Text(LocalizedStringKey(title))
+                .font(.headline)
+                .foregroundColor(theme.text1)
+        }
+    }
+    
+    private func settingsPickerRow<T: Hashable & RawRepresentable>(icon: String, title: String, selection: Binding<T>) -> some View where T.RawValue == String, T: CaseIterable {
+        HStack {
+            settingsRowLabel(icon: icon, title: title)
+            Spacer()
+            Picker("", selection: selection) {
+                ForEach(Array(T.allCases as! [T]), id: \.self) { item in
+                    Text(LocalizedStringKey(item.rawValue)).tag(item)
+                }
+            }
+            .pickerStyle(.menu)
+            .tint(theme.text3)
         }
     }
         
@@ -95,7 +170,7 @@ struct SettingsView: View {
                 NotificationManager.shared.scheduleAlarm(
                     id: notificationId,
                     time: Date(timeIntervalSince1970: notificationTime),
-                    title: "Tempestia Daily Summary",
+                    title: "Tempestia",
                     subtitle: subtitle,
                 )
             }
@@ -118,7 +193,7 @@ struct SettingsView: View {
         
         do {
             let weather = try await repository.fetchWeather(query: query, days: 1)
-            return "Expect \(weather.conditionText). High: \(weather.maxTemp)°C | Low: \(weather.minTemp)°C."
+            return "Expect \(weather.conditionText) today. High: \(weather.maxTemp.toAppTemp()) | Low: \(weather.minTemp.toAppTemp())."
         } catch {
             return "Tap to see today's weather forecast."
         }

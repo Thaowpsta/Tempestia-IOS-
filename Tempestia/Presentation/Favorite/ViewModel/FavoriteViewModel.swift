@@ -1,21 +1,16 @@
 //
-//  LocationSearchViewModel.swift
+//  FavoriteViewModel.swift
 //  Tempestia
 //
 //  Created by Thaowpsta Saiid on 16/06/2026.
 //
 
 
-//
-//  LocationSearchViewModel.swift
-//  Tempestia
-//
-
 import Foundation
 import Combine
 
 @MainActor
-class LocationSearchViewModel: ObservableObject {
+class FavoriteViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var searchResults: [LocationSearchResult] = []
     @Published var isSearching = false

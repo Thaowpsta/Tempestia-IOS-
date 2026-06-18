@@ -20,7 +20,7 @@ struct DailyForecastRow: View {
     var body: some View {
         NavigationLink(destination: HourlyForecastView(hourlyData: hourlyData)) {
             HStack {
-                Text(day)
+                Text(LocalizedStringKey(day))
                     .foregroundColor(theme.text2)
                     .font(.system(size: 16, weight: .medium))
                     .frame(width: 60, alignment: .leading)
@@ -39,10 +39,4 @@ struct DailyForecastRow: View {
     }
 }
 
-#Preview {
-    if #available(iOS 16.0, *) {
-//        DailyForecastRow( day: "Sunday", icon: "tempestia_dark", minTemp: "18", maxTemp: "30")
-    } else {
-        // Fallback on earlier versions
-    }
-}
+

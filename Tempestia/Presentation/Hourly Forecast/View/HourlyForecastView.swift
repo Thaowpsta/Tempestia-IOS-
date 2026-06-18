@@ -20,7 +20,10 @@ struct HourlyForecastView: View {
             
             List {
                 ForEach(hourlyData, id: \.timeEpoch) { hour in
-                    HourlyRow(time: hour.time, temp: "\(Int(hour.temp))°", icon: hour.conditionIcon)
+                    HourlyRow(
+                        time: Date(timeIntervalSince1970: hour.timeEpoch).toAppTime(),
+                        temp: hour.temp.toAppTemp(),
+                        icon: hour.conditionIcon)
                 }
             }
             .listStyle(.plain)

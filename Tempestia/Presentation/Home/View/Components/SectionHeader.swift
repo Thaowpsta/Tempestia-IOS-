@@ -19,8 +19,7 @@ struct SectionHeader: View {
                 .foregroundColor(theme.text3)
                 .font(.system(size: 14, weight: .bold))
             
-            Text(title)
-                .foregroundColor(theme.text3)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 12, weight: .bold))
             Spacer()
         }

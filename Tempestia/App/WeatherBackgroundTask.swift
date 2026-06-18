@@ -66,7 +66,7 @@ class WeatherBackgroundTask {
                 for request in pendingRequests {
                     let newContent = UNMutableNotificationContent()
                     newContent.title = "Tempestia Daily Summary"
-                    newContent.body = "Expect \(weather.conditionText). High: \(weather.maxTemp)°C | Low: \(weather.minTemp)°C."
+                    newContent.body = "Expect \(weather.conditionText) today. High: \(weather.maxTemp.toAppTemp()) | Low: \(weather.minTemp.toAppTemp())."
                     newContent.sound = .default
 
                     let newRequest = UNNotificationRequest(

@@ -16,13 +16,13 @@ struct FavoriteRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
-                Text(location.name)
+                Text(LocalizedStringKey(location.name))
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(theme.text1)
                 
                 HStack(spacing: 4) {
                     Image(systemName: "mappin.and.ellipse")
-                    Text("Saved Location")
+                    Text(LocalizedStringKey("Saved Location"))
                 }
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(theme.text3)

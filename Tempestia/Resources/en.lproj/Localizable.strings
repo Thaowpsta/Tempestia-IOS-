@@ -1,0 +1,114 @@
+/* 
+  Localizable.strings
+  Tempestia
+
+  Created by Thaowpsta Saiid on 18/06/2026.
+  
+*/
+
+/* Tabs */
+"Home" = "Home";
+"Favorites" = "Favorites";
+"Settings" = "Settings";
+
+/* Settings Screen */
+"Daily Weather Summary" = "Daily Weather Summary";
+"Delivery Time" = "Delivery Time";
+"Location Mode" = "Location Mode";
+"Pick location on Map..." = "Pick location on Map...";
+"Temperature Unit" = "Temperature Unit";
+"Time Format" = "Time Format";
+"App Theme" = "App Theme";
+"Language" = "Language";
+
+/* Settings Enums */
+"GPS" = "GPS";
+"Manual (Map)" = "Manual (Map)";
+"Celsius (°C)" = "Celsius (°C)";
+"Fahrenheit (°F)" = "Fahrenheit (°F)";
+"12-Hour" = "12-Hour";
+"24-Hour" = "24-Hour";
+"Auto (Time)" = "Auto (Time)";
+"Light" = "Light";
+"Dark" = "Dark";
+"System Default" = "System Default";
+
+/* Forecast */
+"Hourly Forecast" = "Hourly Forecast";
+"Today" = "Today";
+
+/* Weather Conditions */
+"Clear" = "Clear";
+"Sunny" = "Sunny";
+"Partly cloudy" = "Partly cloudy";
+"Cloudy" = "Cloudy";
+"Overcast" = "Overcast";
+"Mist" = "Mist";
+"Patchy rain possible" = "Patchy rain possible";
+"Light rain" = "Light rain";
+"Heavy rain" = "Heavy rain";
+"Snow" = "Snow";
+"Thunderstorm" = "Thunderstorm";
+
+/* Cities */
+"Alexandria" = "Alexandria";
+"Cairo" = "Cairo";
+"London" = "London";
+"Riyadh" = "Riyadh";
+"Dubai" = "Dubai";
+
+/* Favorites Screen */
+"Search for a city..." = "Search for a city...";
+"Add City" = "Add City";
+"Cancel" = "Cancel";
+"Add" = "Add";
+"No favorites yet." = "No favorites yet.";
+"Saved Location" = "Saved Location";
+
+/* Home Screen Headers & Loading */
+"Locating..." = "Locating...";
+"Analyzing Atmosphere..." = "Analyzing Atmosphere...";
+"3-DAY FORECAST" = "3-DAY FORECAST";
+"ATMOSPHERIC DETAILS" = "ATMOSPHERIC DETAILS";
+
+/* Favorites Screen Additions */
+"Filter favorites..." = "Filter favorites...";
+"No Cities Found" = "No Cities Found";
+"Remove City" = "Remove City";
+"Remove" = "Remove";
+
+/* 🌟 Special SwiftUI String Interpolation Key */
+"Are you sure you want to remove %@ from your favorites?" = "Are you sure you want to remove %@ from your favorites?";
+
+/* Atmospheric Details */
+"Visibility" = "Visibility";
+"Humidity" = "Humidity";
+"Feels Like" = "Feels Like";
+"Pressure" = "Pressure";
+"UV Index" = "UV Index";
+"Wind" = "Wind";
+
+/* Days of the Week */
+"Monday" = "Monday";
+"Tuesday" = "Tuesday";
+"Wednesday" = "Wednesday";
+"Thursday" = "Thursday";
+"Friday" = "Friday";
+"Saturday" = "Saturday";
+"Sunday" = "Sunday";
+"Mon" = "Mon";
+"Tue" = "Tue";
+"Wed" = "Wed";
+"Thu" = "Thu";
+"Fri" = "Fri";
+"Sat" = "Sat";
+"Sun" = "Sun";
+
+/* Countries & Regions (Add as needed based on your searches) */
+"Egypt" = "Egypt";
+"United Kingdom" = "United Kingdom";
+"Saudi Arabia" = "Saudi Arabia";
+"United Arab Emirates" = "United Arab Emirates";
+"Alexandria Governorate" = "Alexandria Governorate";
+"Cairo Governorate" = "Cairo Governorate";
+"Riyadh Region" = "Riyadh Region";

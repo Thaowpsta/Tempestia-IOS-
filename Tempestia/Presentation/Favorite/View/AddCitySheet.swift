@@ -15,7 +15,7 @@ struct AddCitySheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
-    @StateObject private var viewModel = DependencyInjector.resolve(LocationSearchViewModel.self)
+    @StateObject private var viewModel = DependencyInjector.resolve(FavoriteViewModel.self)
     
     var body: some View {
         VStack(spacing: 16) {
@@ -23,7 +23,7 @@ struct AddCitySheet: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(theme.text3)
-                TextField("Search for a city...", text: $viewModel.searchText)
+                TextField(LocalizedStringKey("Search for a city..."), text: $viewModel.searchText)
                     .foregroundColor(theme.text1)
                     .onChange(of: viewModel.searchText) { _, _ in
                         viewModel.performSearch()
@@ -46,12 +46,17 @@ struct AddCitySheet: View {
                                 saveLocation(result)
                             }) {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(result.name)
+                                    Text(LocalizedStringKey(result.name))
                                         .font(.system(size: 18, weight: .bold))
                                         .foregroundColor(theme.text1)
-                                    Text("\(result.region), \(result.country)")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(theme.text3)
+                                    
+                                    HStack(spacing: 4) {
+                                        Text(LocalizedStringKey(result.region))
+                                        Text(",")
+                                        Text(LocalizedStringKey(result.country))
+                                    }
+                                    .font(.system(size: 14))
+                                    .foregroundColor(theme.text3)
                                 }
                                 .contentShape(Rectangle())
                                 .frame(maxWidth: .infinity, alignment: .leading)

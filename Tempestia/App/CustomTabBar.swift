@@ -28,7 +28,7 @@ struct CustomTabBar: View {
                             .foregroundColor(selectedTab == tab ? theme.purpleBright : theme.text3)
                             .scaleEffect(selectedTab == tab ? 1.1 : 1.0)
                         
-                        Text(tab.title)
+                        Text(LocalizedStringKey(tab.title))
                             .font(.system(size: 10, weight: selectedTab == tab ? .bold : .medium))
                             .foregroundColor(selectedTab == tab ? theme.purpleBright : theme.text3)
                     }

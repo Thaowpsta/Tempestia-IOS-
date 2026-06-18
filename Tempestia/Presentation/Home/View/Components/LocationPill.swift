@@ -18,7 +18,7 @@ struct LocationPill: View {
                 .foregroundColor(theme.purpleBright)
                 .font(.system(size: 14, weight: .bold))
             
-            Text(locationName)
+            Text(LocalizedStringKey(locationName))
                 .foregroundColor(theme.text1)
                 .font(.system(size: 18, weight: .semibold))
         }

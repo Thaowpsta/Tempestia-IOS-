@@ -1,0 +1,114 @@
+/* 
+  Localizable.strings
+  Tempestia
+
+  Created by Thaowpsta Saiid on 18/06/2026.
+  
+*/
+
+/* Tabs */
+"Home" = "الرئيسية";
+"Favorites" = "المفضلة";
+"Settings" = "الإعدادات";
+
+/* Settings Screen */
+"Daily Weather Summary" = "ملخص الطقس اليومي";
+"Delivery Time" = "وقت التسليم";
+"Location Mode" = "وضع الموقع";
+"Pick location on Map..." = "اختر الموقع على الخريطة...";
+"Temperature Unit" = "وحدة الحرارة";
+"Time Format" = "تنسيق الوقت";
+"App Theme" = "مظهر التطبيق";
+"Language" = "اللغة";
+
+/* Settings Enums */
+"GPS" = "تحديد الموقع (GPS)";
+"Manual (Map)" = "يدوي (خريطة)";
+"Celsius (°C)" = "مئوية (°C)";
+"Fahrenheit (°F)" = "فهرنهايت (°F)";
+"12-Hour" = "١٢ ساعة";
+"24-Hour" = "٢٤ ساعة";
+"Auto (Time)" = "تلقائي (حسب الوقت)";
+"Light" = "فاتح";
+"Dark" = "داكن";
+"System Default" = "الافتراضي للنظام";
+
+/* Forecast */
+"Hourly Forecast" = "توقعات كل ساعة";
+"Today" = "اليوم";
+
+/* Weather Conditions */
+"Clear" = "صافي";
+"Sunny" = "مشمس";
+"Partly cloudy" = "غائم جزئياً";
+"Cloudy" = "غائم";
+"Overcast" = "ملبد بالغيوم";
+"Mist" = "ضباب خفيف";
+"Patchy rain possible" = "احتمال أمطار متفرقة";
+"Light rain" = "أمطار خفيفة";
+"Heavy rain" = "أمطار غزيرة";
+"Snow" = "ثلج";
+"Thunderstorm" = "عاصفة رعدية";
+
+/* Cities */
+"Alexandria" = "الإسكندرية";
+"Cairo" = "القاهرة";
+"London" = "لندن";
+"Riyadh" = "الرياض";
+"Dubai" = "دبي";
+
+/* Favorites Screen */
+"Search for a city..." = "ابحث عن مدينة...";
+"Add City" = "إضافة مدينة";
+"Cancel" = "إلغاء";
+"Add" = "إضافة";
+"No favorites yet." = "لا توجد مفضلة بعد.";
+"Saved Location" = "الموقع المحفوظ";
+
+/* Home Screen Headers & Loading */
+"Locating..." = "جاري تحديد الموقع...";
+"Analyzing Atmosphere..." = "جاري تحليل الغلاف الجوي...";
+"3-DAY FORECAST" = "توقعات لـ ٣ أيام";
+"ATMOSPHERIC DETAILS" = "التفاصيل الجوية";
+
+/* Favorites Screen Additions */
+"Filter favorites..." = "تصفية المفضلة...";
+"No Cities Found" = "لا توجد مدن";
+"Remove City" = "إزالة المدينة";
+"Remove" = "إزالة";
+
+/* 🌟 Special SwiftUI String Interpolation Key */
+"Are you sure you want to remove %@ from your favorites?" = "هل أنت متأكد أنك تريد إزالة %@ من المفضلة؟";
+
+/* Atmospheric Details */
+"Visibility" = "الرؤية";
+"Humidity" = "الرطوبة";
+"Feels Like" = "الاحساس الفعلي";
+"Pressure" = "الضغط الجوي";
+"UV Index" = "مؤشر الأشعة فوق البنفسجية";
+"Wind" = "الرياح";
+
+/* Days of the Week */
+"Monday" = "الاثنين";
+"Tuesday" = "الثلاثاء";
+"Wednesday" = "الأربعاء";
+"Thursday" = "الخميس";
+"Friday" = "الجمعة";
+"Saturday" = "السبت";
+"Sunday" = "الأحد";
+"Mon" = "الاثنين";
+"Tue" = "الثلاثاء";
+"Wed" = "الأربعاء";
+"Thu" = "الخميس";
+"Fri" = "الجمعة";
+"Sat" = "السبت";
+"Sun" = "الأحد";
+
+/* Countries & Regions */
+"Egypt" = "مصر";
+"United Kingdom" = "المملكة المتحدة";
+"Saudi Arabia" = "المملكة العربية السعودية";
+"United Arab Emirates" = "الإمارات العربية المتحدة";
+"Alexandria Governorate" = "محافظة الإسكندرية";
+"Cairo Governorate" = "محافظة القاهرة";
+"Riyadh Region" = "منطقة الرياض";

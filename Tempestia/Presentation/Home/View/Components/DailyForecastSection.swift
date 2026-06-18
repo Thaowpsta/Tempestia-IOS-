@@ -19,8 +19,8 @@ struct DailyForecastSection: View {
                 DailyForecastRow(
                     day: index == 0 ? "Today" : day.date,
                     icon: day.conditionIcon,
-                    minTemp: "\(Int(day.minTemp))°",
-                    maxTemp: "\(Int(day.maxTemp))°",
+                    minTemp: day.minTemp.toAppTemp(),
+                    maxTemp: day.maxTemp.toAppTemp(),
                     hourlyData: hourlyData
                 )
 

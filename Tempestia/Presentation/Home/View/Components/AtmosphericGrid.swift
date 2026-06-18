@@ -16,10 +16,10 @@ struct AtmosphericGrid: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 16) {
-            AtmosphericCard(title: "VISIBILITY", value: "\(Int(weather.visibility)) km", subtext: "Clear view", icon: "👁️")
-            AtmosphericCard(title: "HUMIDITY", value: "\(weather.humidity)%", subtext: "Comfortable", icon: "💧")
-            AtmosphericCard(title: "FEELS LIKE", value: "\(Int(weather.feelsLike))°", subtext: "Similar to actual", icon: "🌡️")
-            AtmosphericCard(title: "PRESSURE", value: "\(Int(weather.pressure)) mb", subtext: "Normal pressure", icon: "⏱️")
+            AtmosphericCard(title: "Visibility", value: "\(Int(weather.visibility)) km", icon: "👁️")
+            AtmosphericCard(title: "Humidity", value: "\(weather.humidity)%", icon: "💧")
+            AtmosphericCard(title: "Feels Like", value: "\(Int(weather.feelsLike))°", icon: "🌡️")
+            AtmosphericCard(title: "Pressure", value: "\(Int(weather.pressure)) mb", icon: "⏱️")
         }
     }
 }

@@ -14,6 +14,7 @@ struct TempestiaApp: App {
     @Environment(\.colorScheme) var colorScheme
     
     @StateObject private var router = AppRouter()
+    @StateObject private var networkMonitor = NetworkMonitor.shared
     
     @AppStorage("appTheme") private var appTheme: AppThemeMode = .auto
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
@@ -64,6 +65,7 @@ struct TempestiaApp: App {
             .preferredColorScheme(activeColorScheme)
             .environment(\.locale, activeLocale)
             .environment(\.layoutDirection, appLanguage == .arabic ? .rightToLeft : .leftToRight)
+            .environmentObject(networkMonitor)
             .id("\(appLanguage.rawValue)\(temperatureUnit.rawValue)\(timeFormat.rawValue)\(appTheme.rawValue)\(colorScheme)")
         }
         .backgroundTask(.appRefresh(WeatherBackgroundTask.shared.taskId)) {

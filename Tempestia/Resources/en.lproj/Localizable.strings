@@ -112,3 +112,10 @@
 "Alexandria Governorate" = "Alexandria Governorate";
 "Cairo Governorate" = "Cairo Governorate";
 "Riyadh Region" = "Riyadh Region";
+
+/* Offline Alerts */
+"Offline" = "Offline";
+"OK" = "OK";
+"You cannot perform this action without an internet connection." = "You cannot perform this action without an internet connection.";
+"You cannot refresh the weather without an internet connection." = "You cannot refresh the weather without an internet connection.";
+"You are offline. Showing your previously saved weather data." = "You are offline. Showing your previously saved weather data.";

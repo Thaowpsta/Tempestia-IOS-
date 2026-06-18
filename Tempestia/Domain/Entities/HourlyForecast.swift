@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct HourlyForecast {
+struct HourlyForecast: Codable {
     let time: String 
     let timeEpoch: TimeInterval
     let temp: Double

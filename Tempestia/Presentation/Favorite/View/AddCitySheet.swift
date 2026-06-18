@@ -16,24 +16,41 @@ struct AddCitySheet: View {
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel = DependencyInjector.resolve(FavoriteViewModel.self)
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     
     var body: some View {
         VStack(spacing: 16) {
+            
+            if !networkMonitor.isConnected {
+                HStack {
+                    Image(systemName: "wifi.slash")
+                    Text(LocalizedStringKey("No internet connection"))
+                }
+                .foregroundColor(.white)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+                .background(Color.red.opacity(0.8))
+                .cornerRadius(20)
+                .padding(.top, 20)
+            }
           
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(theme.text3)
                 TextField(LocalizedStringKey("Search for a city..."), text: $viewModel.searchText)
                     .foregroundColor(theme.text1)
+                    .disabled(!networkMonitor.isConnected)
                     .onChange(of: viewModel.searchText) { _, _ in
-                        viewModel.performSearch()
+                        if networkMonitor.isConnected {
+                            viewModel.performSearch()
+                        }
                     }
             }
             .padding(16)
             .background(theme.glassBorder.opacity(0.5))
             .cornerRadius(16)
             .padding(.horizontal)
-            .padding(.top, 20)
+            .padding(.top, networkMonitor.isConnected ? 20 : 0)
             
             if viewModel.isSearching {
                 ProgressView().padding(.top, 20)

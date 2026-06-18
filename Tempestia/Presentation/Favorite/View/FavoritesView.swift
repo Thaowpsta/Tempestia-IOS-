@@ -15,6 +15,9 @@ struct FavoritesView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var router: AppRouter
     
+    @EnvironmentObject var networkMonitor: NetworkMonitor
+    @State private var showingOfflineAlert = false
+    
     @Query(sort: \FavoriteLocation.addedAt, order: .reverse) private var favorites: [FavoriteLocation]
     
     @State private var localSearchText = ""
@@ -38,7 +41,7 @@ struct FavoritesView: View {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(theme.text3)
-                        TextField("", text: $localSearchText, prompt: Text("Filter favorites...").foregroundColor(theme.text3.opacity(0.8)))
+                        TextField("", text: $localSearchText, prompt: Text(LocalizedStringKey("Filter favorites...")).foregroundColor(theme.text3.opacity(0.8)))
                             .foregroundColor(theme.text1)
                             .tint(theme.purpleBright)
                     }
@@ -73,7 +76,11 @@ struct FavoritesView: View {
                 }
                 
                 Button(action: {
-                    isShowingAddSheet = true
+                    if networkMonitor.isConnected {
+                        isShowingAddSheet = true
+                    } else {
+                        showingOfflineAlert = true
+                    }
                 }) {
                     Image(systemName: "plus")
                         .font(.system(size: 24, weight: .bold))
@@ -88,14 +95,12 @@ struct FavoritesView: View {
                 .padding(.trailing, 24)
                 .padding(.bottom, 120)
             }
-            .navigationTitle("Favorites")
+            .navigationTitle(LocalizedStringKey("Favorites"))
             .onAppear {
                 let appearance = UINavigationBarAppearance()
                 appearance.configureWithTransparentBackground()
-                
                 appearance.largeTitleTextAttributes = [.foregroundColor: UIColor(theme.text1)]
                 appearance.titleTextAttributes = [.foregroundColor: UIColor(theme.text1)]
-                
                 UINavigationBar.appearance().standardAppearance = appearance
                 UINavigationBar.appearance().scrollEdgeAppearance = appearance
             }
@@ -103,11 +108,16 @@ struct FavoritesView: View {
                 AddCitySheet()
                     .presentationDetents([.medium, .large])
             }
-            .alert("Remove City", isPresented: $showingDeleteAlert, presenting: locationToDelete) { location in
-                Button("Cancel", role: .cancel) {
+            .alert(LocalizedStringKey("Offline"), isPresented: $showingOfflineAlert) {
+                Button(LocalizedStringKey("OK"), role: .cancel) { }
+            } message: {
+                Text(LocalizedStringKey("You cannot perform this action without an internet connection."))
+            }
+            .alert(LocalizedStringKey("Remove City"), isPresented: $showingDeleteAlert, presenting: locationToDelete) { location in
+                Button(LocalizedStringKey("Cancel"), role: .cancel) {
                     locationToDelete = nil
                 }
-                Button("Remove", role: .destructive) {
+                Button(LocalizedStringKey("Remove"), role: .destructive) {
                     performActualDeletion(location)
                 }
             } message: { location in
@@ -122,13 +132,18 @@ struct FavoritesView: View {
                 .font(.system(size: 64))
                 .foregroundColor(theme.text3.opacity(0.5))
             
-            Text("No Cities Found")
+            Text(LocalizedStringKey("No Cities Found"))
                 .font(.title2.bold())
                 .foregroundColor(theme.text1)
         }
     }
         
     private func confirmDelete(offsets: IndexSet) {
+        guard networkMonitor.isConnected else {
+            showingOfflineAlert = true
+            return
+        }
+        
         if let index = offsets.first {
             locationToDelete = filteredFavorites[index]
             showingDeleteAlert = true

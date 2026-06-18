@@ -22,6 +22,24 @@ class HomeViewModel: ObservableObject {
         self.locationTracker = locationTracker
     }
     
+    private func cacheKey(for query: String) -> String {
+        return "cached_weather_\(query)"
+    }
+    
+    private func saveToCache(_ weather: WeatherInfo, query: String) {
+        if let data = try? JSONEncoder().encode(weather) {
+            UserDefaults.standard.set(data, forKey: cacheKey(for: query))
+        }
+    }
+    
+    private func loadFromCache(query: String) -> WeatherInfo? {
+        if let data = UserDefaults.standard.data(forKey: cacheKey(for: query)),
+           let weather = try? JSONDecoder().decode(WeatherInfo.self, from: data) {
+            return weather
+        }
+        return nil
+    }
+    
     func fetchWeatherForCurrentLocation() async {
         isLoading = true
         errorMessage = nil
@@ -30,14 +48,24 @@ class HomeViewModel: ObservableObject {
             let coords = try await locationTracker.getCurrentLocation()
             let query = "\(coords.latitude),\(coords.longitude)"
             
+            guard NetworkMonitor.shared.isConnected else {
+                if let cached = loadFromCache(query: "current_location") {
+                    self.weatherInfo = cached
+                    self.errorMessage = ""
+                } else {
+                    self.errorMessage = "No internet connection. Please try again later."
+                }
+                self.isLoading = false
+                return
+            }
+            
             self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
+            if let weather = self.weatherInfo { saveToCache(weather, query: "current_location") }
             self.isLoading = false
             
         } catch is CancellationError {
-            print("Task cancelled by system.")
             self.isLoading = false
         } catch let error as URLError where error.code == .cancelled {
-            print("Network request cancelled by system.")
             self.isLoading = false
         } catch let error as LocationError {
             self.errorMessage = error.localizedDescription
@@ -51,19 +79,28 @@ class HomeViewModel: ObservableObject {
     func fetchWeatherForCoordinates(latitude: Double, longitude: Double) async {
         isLoading = true
         errorMessage = nil
+        let query = "\(latitude),\(longitude)"
+        
+        guard NetworkMonitor.shared.isConnected else {
+            if let cached = loadFromCache(query: query) {
+                self.weatherInfo = cached
+                self.errorMessage = ""
+            } else {
+                self.errorMessage = "No internet connection. Please try again later."
+            }
+            self.isLoading = false
+            return
+        }
         
         do {
-            let query = "\(latitude),\(longitude)"
             self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
+            if let weather = self.weatherInfo { saveToCache(weather, query: query) }
             self.isLoading = false
-            print("Task Updated Successfully.")
             
         } catch is CancellationError {
-            print("Task cancelled by system.")
             self.isLoading = false
         } catch let error as URLError where error.code == .cancelled {
-            print("Network request cancelled by system.")
-            self.isLoading = false 
+            self.isLoading = false
         } catch {
             self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
             self.isLoading = false

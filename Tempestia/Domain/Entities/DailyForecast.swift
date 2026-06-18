@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct DailyForecast {
+struct DailyForecast: Codable {
     let date: String 
     let dateEpoch: TimeInterval
     let maxTemp: Double

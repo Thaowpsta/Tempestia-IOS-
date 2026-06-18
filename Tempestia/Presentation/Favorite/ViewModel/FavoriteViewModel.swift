@@ -14,6 +14,7 @@ class FavoriteViewModel: ObservableObject {
     @Published var searchText = ""
     @Published var searchResults: [LocationSearchResult] = []
     @Published var isSearching = false
+    @Published var errorMessage: String?
     
     private let repository: WeatherRepositoryProtocol
     private var searchTask: Task<Void, Never>?
@@ -22,25 +23,30 @@ class FavoriteViewModel: ObservableObject {
         self.repository = repository
     }
     
-    func performSearch() {
-        searchTask?.cancel()
+    func performSearch(query: String? = nil) {
+        let textToSearch = query ?? searchText
         
-        guard searchText.count > 2 else {
+        guard NetworkMonitor.shared.isConnected else {
+            self.errorMessage = "No internet connection."
+            self.searchResults = []
+            self.isSearching = false
+            return
+        }
+        
+        guard textToSearch.count >= 3 else {
             searchResults = []
             return
         }
         
-        searchTask = Task {
-            isSearching = true
+        isSearching = true
+        errorMessage = nil
+        
+        Task {
             do {
-                let results = try await repository.searchLocations(query: searchText)
-                
-                if !Task.isCancelled {
-                    self.searchResults = results
-                    self.isSearching = false
-                }
+                self.searchResults = try await repository.searchLocations(query: textToSearch)
+                self.isSearching = false
             } catch {
-                print("Search failed: \(error)")
+                self.errorMessage = "Search failed: \(error.localizedDescription)"
                 self.isSearching = false
             }
         }

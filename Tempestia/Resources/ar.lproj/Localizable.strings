@@ -112,3 +112,10 @@
 "Alexandria Governorate" = "محافظة الإسكندرية";
 "Cairo Governorate" = "محافظة القاهرة";
 "Riyadh Region" = "منطقة الرياض";
+
+/* Offline Alerts */
+"Offline" = "غير متصل";
+"OK" = "حسناً";
+"You cannot perform this action without an internet connection." = "لا يمكنك تنفيذ هذا الإجراء بدون اتصال بالإنترنت.";
+"You cannot refresh the weather without an internet connection." = "لا يمكنك تحديث الطقس بدون اتصال بالإنترنت.";
+"You are offline. Showing your previously saved weather data." = "أنت غير متصل بالإنترنت. يتم عرض بيانات الطقس المحفوظة مسبقاً.";

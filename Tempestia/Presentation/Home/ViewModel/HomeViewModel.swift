@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import CoreLocation
 
 @MainActor
 class HomeViewModel: ObservableObject {
@@ -41,40 +42,53 @@ class HomeViewModel: ObservableObject {
     }
     
     func fetchWeatherForCurrentLocation() async {
-        isLoading = true
-        errorMessage = nil
-        
-        do {
-            let coords = try await locationTracker.getCurrentLocation()
-            let query = "\(coords.latitude),\(coords.longitude)"
+            isLoading = true
+            errorMessage = nil
             
-            guard NetworkMonitor.shared.isConnected else {
-                if let cached = loadFromCache(query: "current_location") {
-                    self.weatherInfo = cached
-                    self.errorMessage = ""
-                } else {
-                    self.errorMessage = "No internet connection. Please try again later."
+            do {
+                let coords = try await locationTracker.getCurrentLocation()
+                let query = "\(coords.latitude),\(coords.longitude)"
+                
+                guard NetworkMonitor.shared.isConnected else {
+                    if let cached = loadFromCache(query: "current_location") {
+                        self.weatherInfo = cached
+                        self.errorMessage = ""
+                    } else {
+                        self.errorMessage = "No internet connection. Please try again later."
+                    }
+                    self.isLoading = false
+                    return
                 }
+                
+                self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
+                
+                let geocoder = CLGeocoder()
+                let location = CLLocation(latitude: coords.latitude, longitude: coords.longitude)
+                if let placemarks = try? await geocoder.reverseGeocodeLocation(location),
+                   let placemark = placemarks.first {
+                    
+                    if let properName = placemark.subLocality ?? placemark.locality {
+                        self.weatherInfo?.locationName = properName
+                    }
+                }
+                
+                if let weather = self.weatherInfo { saveToCache(weather, query: "current_location") }
                 self.isLoading = false
-                return
+                
+            } catch is CancellationError {
+                print("Task cancelled by system.")
+                self.isLoading = false
+            } catch let error as URLError where error.code == .cancelled {
+                print("Network request cancelled by system.")
+                self.isLoading = false
+            } catch let error as LocationError {
+                self.errorMessage = error.localizedDescription
+                self.isLoading = false
+            } catch {
+                self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
+                self.isLoading = false
             }
-            
-            self.weatherInfo = try await repository.fetchWeather(query: query, days: 3)
-            if let weather = self.weatherInfo { saveToCache(weather, query: "current_location") }
-            self.isLoading = false
-            
-        } catch is CancellationError {
-            self.isLoading = false
-        } catch let error as URLError where error.code == .cancelled {
-            self.isLoading = false
-        } catch let error as LocationError {
-            self.errorMessage = error.localizedDescription
-            self.isLoading = false
-        } catch {
-            self.errorMessage = "Failed to fetch weather: \(error.localizedDescription)"
-            self.isLoading = false
         }
-    }
     
     func fetchWeatherForCoordinates(latitude: Double, longitude: Double) async {
         isLoading = true

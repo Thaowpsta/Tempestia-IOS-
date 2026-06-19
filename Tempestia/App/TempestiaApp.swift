@@ -60,7 +60,7 @@ struct TempestiaApp: App {
                 \.tempestia,
                 TempestiaTheme(isMorning: isMorningTheme)
             )
-            .modelContainer(for: [FavoriteLocation.self, WeatherAlarm.self])
+            .modelContainer(for: FavoriteLocation.self)
             .environmentObject(router)
             .preferredColorScheme(activeColorScheme)
             .environment(\.locale, activeLocale)

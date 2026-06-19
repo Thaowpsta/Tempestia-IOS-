@@ -2,15 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.tempestia.weather.update</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-	</array>
-	<key>WeatherAPIKey</key>
-	<string>$(WEATHER_API_KEY)</string>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.tempestia.weather.update</string>
+    </array>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+    </array>
+    <key>WeatherAPIKey</key>
+    <string>$(WEATHER_API_KEY)</string>
+    
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Tempestia needs your location to provide you with the most accurate local weather forecast.</string>
 </dict>
 </plist>

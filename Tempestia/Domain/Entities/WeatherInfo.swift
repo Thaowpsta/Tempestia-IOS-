@@ -7,7 +7,7 @@
 
 
 struct WeatherInfo : Codable{
-    let locationName: String
+    var locationName: String
     let currentTemp: Double
     let conditionText: String
     let conditionIcon: String

@@ -180,15 +180,20 @@ struct SettingsView: View {
     }
     
     private func fetchCurrentWeatherSubtitle() async -> String {
-        guard let repository = DependencyInjector.shared.container.resolve(WeatherRepositoryProtocol.self) else {
+        guard let repository = DependencyInjector.shared.container.resolve(WeatherRepositoryProtocol.self),
+              let locationTracker = DependencyInjector.shared.container.resolve(LocationTrackerProtocol.self) else {
             return "Check the app for today's temperatures!"
         }
         
-        let query: String
-        if let targetCity = favorites.first {
-            query = "\(targetCity.latitude),\(targetCity.longitude)"
-        } else {
-            query = "Alexandria"
+        var query: String = "Alexandria"
+        
+        do {
+            let location = try await locationTracker.getCurrentLocation()
+            query = "\(location.latitude),\(location.longitude)"
+        } catch {
+            if let targetCity = favorites.first {
+                query = "\(targetCity.latitude),\(targetCity.longitude)"
+            }
         }
         
         do {

@@ -33,11 +33,19 @@ class WeatherBackgroundTask {
     }
 
     func performWeatherUpdate() async {
-            let repository = DependencyInjector.shared.container.resolve(
-                WeatherRepositoryProtocol.self
-            )!
+        guard let repository = DependencyInjector.shared.container.resolve(WeatherRepositoryProtocol.self),
+              let locationTracker = DependencyInjector.shared.container.resolve(LocationTrackerProtocol.self) else {
+            scheduleNextRefresh()
+            return
+        }
 
+        do {
+            var query: String = "Alexandria"
+            
             do {
+                let location = try await locationTracker.getCurrentLocation()
+                query = "\(location.latitude),\(location.longitude)"
+            } catch {
                 let container = try ModelContainer(for: FavoriteLocation.self)
                 let context = ModelContext(container)
 
@@ -46,39 +54,36 @@ class WeatherBackgroundTask {
                 ])
                 descriptor.fetchLimit = 1
 
-                let favorites = try context.fetch(descriptor)
-
-                let query: String
-                if let targetCity = favorites.first {
+                if let targetCity = try context.fetch(descriptor).first {
                     query = "\(targetCity.latitude),\(targetCity.longitude)"
-                } else {
-                    query = "Alexandria"
                 }
-
-                let weather = try await repository.fetchWeather(
-                    query: query,
-                    days: 1
-                )
-
-                let center = UNUserNotificationCenter.current()
-                let pendingRequests = await center.pendingNotificationRequests()
-
-                for request in pendingRequests {
-                    let newContent = UNMutableNotificationContent()
-                    newContent.title = "Tempestia Daily Summary"
-                    newContent.body = "Expect \(weather.conditionText) today. High: \(weather.maxTemp.toAppTemp()) | Low: \(weather.minTemp.toAppTemp())."
-                    newContent.sound = .default
-
-                    let newRequest = UNNotificationRequest(
-                        identifier: request.identifier,
-                        content: newContent,
-                        trigger: request.trigger
-                    )
-                    try? await center.add(newRequest)
-                }
-            } catch {
-                print("Background fetch failed: \(error)")
             }
 
-            scheduleNextRefresh()
-        }}
+            let weather = try await repository.fetchWeather(
+                query: query,
+                days: 1
+            )
+
+            let center = UNUserNotificationCenter.current()
+            let pendingRequests = await center.pendingNotificationRequests()
+
+            for request in pendingRequests {
+                let newContent = UNMutableNotificationContent()
+                newContent.title = "Tempestia Daily Summary"
+                newContent.body = "Expect \(weather.conditionText) today. High: \(weather.maxTemp.toAppTemp()) | Low: \(weather.minTemp.toAppTemp())."
+                newContent.sound = .default
+
+                let newRequest = UNNotificationRequest(
+                    identifier: request.identifier,
+                    content: newContent,
+                    trigger: request.trigger
+                )
+                try? await center.add(newRequest)
+            }
+        } catch {
+            print("Background fetch failed: \(error)")
+        }
+
+        scheduleNextRefresh()
+    }
+}

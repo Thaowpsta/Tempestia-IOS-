@@ -15,6 +15,9 @@ class LocationTracker: NSObject, LocationTrackerProtocol, CLLocationManagerDeleg
     
     private var locationContinuation: CheckedContinuation<(latitude: Double, longitude: Double), Error>?
     
+    private let lastLatKey = "lastFetchedLatitude"
+    private let lastLonKey = "lastFetchedLongitude"
+    
     override init() {
         super.init()
         locationManager.delegate = self
@@ -22,6 +25,14 @@ class LocationTracker: NSObject, LocationTrackerProtocol, CLLocationManagerDeleg
     }
     
     func getCurrentLocation() async throws -> (latitude: Double, longitude: Double) {
+        if !NetworkMonitor.shared.isConnected {
+            if let cachedLocation = getCachedLocation() {
+                return cachedLocation
+            } else {
+                throw LocationError.unableToDetermineLocation
+            }
+        }
+        
         let status = locationManager.authorizationStatus
         
         if status == .denied || status == .restricted {
@@ -43,6 +54,16 @@ class LocationTracker: NSObject, LocationTrackerProtocol, CLLocationManagerDeleg
             }
         }
     }
+    
+    private func getCachedLocation() -> (latitude: Double, longitude: Double)? {
+        let lat = UserDefaults.standard.double(forKey: lastLatKey)
+        let lon = UserDefaults.standard.double(forKey: lastLonKey)
+        
+        if lat != 0.0 || lon != 0.0 {
+            return (lat, lon)
+        }
+        return nil
+    }
         
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
@@ -61,9 +82,15 @@ class LocationTracker: NSObject, LocationTrackerProtocol, CLLocationManagerDeleg
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first, let continuation = locationContinuation else { return }
         
-        continuation.resume(returning: (location.coordinate.latitude, location.coordinate.longitude))
+        let lat = location.coordinate.latitude
+        let lon = location.coordinate.longitude
         
-        self.locationContinuation = nil 
+        UserDefaults.standard.set(lat, forKey: lastLatKey)
+        UserDefaults.standard.set(lon, forKey: lastLonKey)
+        
+        continuation.resume(returning: (lat, lon))
+        
+        self.locationContinuation = nil
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -71,6 +98,8 @@ class LocationTracker: NSObject, LocationTrackerProtocol, CLLocationManagerDeleg
         
         if let clError = error as? CLError, clError.code == .denied {
             continuation.resume(throwing: LocationError.unauthorized)
+        } else if let cachedLocation = getCachedLocation() {
+            continuation.resume(returning: cachedLocation)
         } else {
             continuation.resume(throwing: LocationError.unableToDetermineLocation)
         }
